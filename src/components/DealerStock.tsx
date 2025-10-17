@@ -77,6 +77,11 @@ function DealerStock({ onBack }) {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [itemsPerPage, setItemsPerPage] = useState(10);
 
+	// Progress state
+	const [progress, setProgress] = useState<number>(0);
+	const [progressVisible, setProgressVisible] = useState<boolean>(false);
+	const [progressLabel, setProgressLabel] = useState<string>("");
+
 	// Persist ftpServers and lastUploadTimes to localStorage
 	useEffect(() => {
 		localStorage.setItem("ftpServers", JSON.stringify(ftpServers));
@@ -212,6 +217,10 @@ function DealerStock({ onBack }) {
 	};
 
 	const handleExportCSV = async () => {
+		setProgressLabel("Exporting CSV...");
+		setProgressVisible(true);
+		setProgress(0);
+
 		const today = new Date().toLocaleDateString("en-US", {
 			timeZone: "America/Chicago",
 		});
@@ -221,8 +230,9 @@ function DealerStock({ onBack }) {
 		}));
 
 		try {
+			let completed = 0;
 			await Promise.all(
-				updatedData.map((item) =>
+				updatedData.map((item, idx) =>
 					fetch(`${API_URL}/${item.id}`, {
 						method: "PATCH",
 						headers: { "Content-Type": "application/json" },
@@ -231,6 +241,8 @@ function DealerStock({ onBack }) {
 						if (!res.ok) {
 							throw new Error(`HTTP error! status: ${res.status}`);
 						}
+						completed++;
+						setProgress(Math.round((completed / updatedData.length) * 100));
 						return res;
 					})
 				)
@@ -245,9 +257,12 @@ function DealerStock({ onBack }) {
 			);
 			const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 			saveAs(blob, "PSC_Stock.csv");
+			setProgress(100);
+			setTimeout(() => setProgressVisible(false), 700);
 			toast.success("CSV exported successfully");
 		} catch (error) {
 			console.error("Error updating dates for CSV export:", error);
+			setProgressVisible(false);
 			toast.error("Failed to export CSV");
 		}
 	};
@@ -257,6 +272,10 @@ function DealerStock({ onBack }) {
 			toast.error("No stock data to upload");
 			return;
 		}
+		setProgressLabel(`Uploading to ${ftpServers[ftpId].name}...`);
+		setProgressVisible(true);
+		setProgress(0);
+
 		const today = new Date().toLocaleDateString("en-US", {
 			timeZone: "America/Chicago",
 		});
@@ -266,6 +285,7 @@ function DealerStock({ onBack }) {
 		}));
 
 		try {
+			let completed = 0;
 			await Promise.all(
 				updatedData.map((item) =>
 					fetch(`${API_URL}/${item.id}`, {
@@ -276,11 +296,14 @@ function DealerStock({ onBack }) {
 						if (!res.ok) {
 							throw new Error(`HTTP error! status: ${res.status}`);
 						}
+						completed++;
+						setProgress(Math.round((completed / updatedData.length) * 70)); // up to 70% for patching
 						return res;
 					})
 				)
 			);
 			setTableData(updatedData);
+
 			const response = await fetch("http://localhost:3001/upload-ftp", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
@@ -289,6 +312,7 @@ function DealerStock({ onBack }) {
 					stockData: updatedData,
 				}),
 			});
+			setProgress(85);
 
 			if (!response.ok) {
 				const text = await response.text();
@@ -309,9 +333,12 @@ function DealerStock({ onBack }) {
 
 			const result = await response.json();
 			setLastUploadTimes((prev) => ({ ...prev, [ftpId]: today }));
+			setProgress(100);
+			setTimeout(() => setProgressVisible(false), 700);
 			toast.success(`Uploaded to ${ftpServers[ftpId].name} at ${today}`);
 		} catch (error) {
 			console.error("Error during FTP upload:", error);
+			setProgressVisible(false);
 			toast.error(`Error during FTP upload: ${error.message}`);
 		}
 	};
@@ -480,6 +507,26 @@ function DealerStock({ onBack }) {
 	return (
 		<>
 			<ToastContainer />
+
+			{/* Progress Bar */}
+			{progressVisible && (
+				<div className="progress my-3" style={{ height: "30px" }}>
+					<div
+						className="progress-bar progress-bar-striped progress-bar-animated"
+						role="progressbar"
+						aria-valuenow={progress}
+						aria-valuemin={0}
+						aria-valuemax={100}
+						style={{
+							width: `${progress}%`,
+							fontWeight: "bold",
+							fontSize: "1.1em",
+						}}
+					>
+						{progressLabel} {progress}%
+					</div>
+				</div>
+			)}
 
 			<div
 				style={{ position: "fixed", top: "40px", left: "40px", zIndex: 1000 }}

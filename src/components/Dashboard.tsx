@@ -17,7 +17,7 @@ export default function Dashboard({
 				<img src="/logo.png" alt="Logo" style={{ height: "75px" }} />
 			</div>
 			<div className="text-center">
-				<h1 className="mb-4">Dealer Dashboard</h1>
+				<h1 className="mb-4">WD & Web Dashboard</h1>
 				<button
 					className="btn btn-primary btn-lg mb-3"
 					style={{ width: "250px" }}
@@ -26,13 +26,13 @@ export default function Dashboard({
 					Dealer Stock
 				</button>
 				<br />
-				<button
+				{/* <button
 					className="btn btn-secondary btn-lg"
 					style={{ width: "250px" }}
 					onClick={onShowReport}
 				>
-					Generate Report
-				</button>
+					eCommerce Report
+				</button> */}
 			</div>
 		</div>
 	);
