@@ -145,9 +145,7 @@ server.post("/upload-ftp", (req, res) => {
 		port: parseInt(ftpConfig.port),
 		user: ftpConfig.username,
 		password: ftpConfig.password,
-		// If port 18 is a non-standard plain text gateway, secure: true might fail.
-		// Keep secure: true for Port 21/990 networks.
-		secure: ftpConfig.port === 21 || ftpConfig.port === 990, 
+		secure: false, // Change to false to test standard unencrypted behavior
 		secureOptions: {
 			rejectUnauthorized: false 
 		}
