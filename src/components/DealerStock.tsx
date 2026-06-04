@@ -33,17 +33,17 @@ function DealerStock({ onBack }) {
 			? JSON.parse(saved)
 			: {
 					ftp1: {
-						name: "Turn5 FTP",
-						host: "ftp.turn5.com",
+						name: "FTP 1",
+						host: "ftp.example.com",
 						username: "user1",
 						password: "pass1",
 						port: 21,
 					},
 					ftp2: {
 						name: "ftp2",
-						host: "ftp2.example.com",
-						username: "user2",
-						password: "pass2",
+						host: "ftp.turn5.com",
+						username: "RTI-PerformanceSteering",
+						password: "$T7T@KE5o^",
 						port: 21,
 					},
 					ftp3: {
