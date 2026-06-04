@@ -2,11 +2,13 @@ import jsonServer from "json-server";
 import { Client } from "basic-ftp";
 import Papa from "papaparse";
 import { Readable } from "stream";
+import cors from "cors"
 
 const server = jsonServer.create();
 const router = jsonServer.router('db.json');
 const middlewares = jsonServer.defaults();
 
+server.use(cors());
 server.use(middlewares);
 server.use(jsonServer.bodyParser);
 
@@ -36,7 +38,7 @@ server.post("/upload-ftp", (req, res) => {
 	const csv = Papa.unparse(
 		stockData.map((item) => ({
 			"Part Number": item["Part Number"],
-			"In Stock": item["IN Stock"],
+			"In Stock": item["In Stock"],
 			"Date Time": item["Date Time"],
 		}))
 	);
