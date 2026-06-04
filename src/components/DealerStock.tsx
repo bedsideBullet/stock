@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { debounce } from "lodash";
 
-const API_URL = "http://localhost:3001/stock";
+const API_URL = "https://stock-backend-c3y4.onrender.com/stock";
 
 type FtpServer = {
 	name: string;
