@@ -4,7 +4,7 @@ import Papa from "papaparse";
 import { Readable } from "stream";
 
 const server = jsonServer.create();
-const router = jsonServer.router("db.json");
+const router = jsonServer.router("stock/db.json");
 const middlewares = jsonServer.defaults();
 
 server.use(middlewares);
