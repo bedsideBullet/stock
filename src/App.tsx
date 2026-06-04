@@ -21,9 +21,7 @@ function App() {
 			{page === "dealerStock" && (
 				<DealerStock onBack={() => setPage("dashboard")} />
 			)}
-			{page === "report" && (
-				<ReportGenerator onBack={() => setPage("dashboard")} />
-			)}
+			
 		</>
 	);
 }
