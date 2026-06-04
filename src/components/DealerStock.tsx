@@ -304,14 +304,14 @@ function DealerStock({ onBack }) {
 			);
 			setTableData(updatedData);
 
-			const response = await fetch("http://localhost:3001/upload-ftp", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					ftpConfig: ftpServers[ftpId],
-					stockData: updatedData,
-				}),
-			});
+			const response = await fetch("https://stock-backend-c3y4.onrender.com/upload-ftp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+        ftpConfig: ftpServers[ftpId],
+        stockData: updatedData,
+    }),
+});
 			setProgress(85);
 
 			if (!response.ok) {
